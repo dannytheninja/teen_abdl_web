@@ -1,0 +1,13 @@
+{
+    "name": "dannytheninja/rta",
+    "description": "/r/Teen_ABDL helper/management code",
+    "require": {
+        "restcord/restcord": "^0.3.0"
+    },
+    "authors": [
+        {
+            "name": "DannyTheNinja",
+            "email": "danny@paddedninja.net"
+        }
+    ]
+}

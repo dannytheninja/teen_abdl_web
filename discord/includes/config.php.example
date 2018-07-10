@@ -1,0 +1,41 @@
+<?php
+
+// Edit this file and save as config.php
+
+// Reddit settings. Create a Reddit app, then fill in the client ID and client
+// secret here.
+//   https://www.reddit.com/prefs/apps
+define('REDDIT_OAUTH_CLIENT_ID', 'XXXXXXXXXXXXXX');
+define('REDDIT_OAUTH_CLIENT_SECRET', 'XXXXXXXXXXXXXXXXXXXXXXXXXXX');
+// Name of the subreddit. Used for both display purposes and to check the user's
+// ban status.
+define('REDDIT_SUB_NAME', 'mysub');
+
+// Create a discord app with a bot token here:
+//   https://discordapp.com/developers/applications/me
+// Then invite it to your server using https://discordapp.com/developers/tools/oauth2-url-generator/
+define('DISCORD_BOT_TOKEN', 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+define('DISCORD_GUILD_ID', 000000000000000000);
+define('DISCORD_NOTIF_CHANNEL', 'mod-logs');
+define('DISCORD_INVITE_CHANNEL', 'guests');
+
+// Get a reCAPTCHA site key and secret at:
+//   https://www.google.com/recaptcha/admin
+define('RECAPTCHA_SITE_KEY', 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+define('RECAPTCHA_SECRET_KEY', 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+
+// To intialize the database, do this at a shell:
+//   cd /path/to/discord/db && sqlite3 < schema.sql
+define('DATABASE_DSN', 'sqlite:' . ROOT . '/db/database.sqlite3');
+
+//
+// Timers...
+//
+
+// Minimum Reddit account age, defaults to 1 week.
+define('REDDIT_ACCOUNT_MIN_AGE', 604800 /* number of seconds in a week */);
+define('REDDIT_ACCOUNT_MIN_AGE_STR', '1 week');
+
+// Cooldown timer between invites
+define('DISCORD_COOLDOWN_TIMER', 86400 /* 1 day */);
+define('DISCORD_COOLDOWN_TIMER_STR', 'once per day' /* 1 day */);
