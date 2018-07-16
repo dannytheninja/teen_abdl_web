@@ -26,10 +26,7 @@ $history = check_history($_SESSION['reddit_account']['name'], $_SERVER['REMOTE_A
 foreach ($history as $entry) {
 	if ($entry['invite_time'] > (time() - DISCORD_COOLDOWN_TIMER)) {
 		$time_remaining = ($entry['invite_time'] + DISCORD_COOLDOWN_TIMER) - time();
-		$hours = floor($time_remaining / 3600);
-		$h_plural = $hours === 1 ? '' : 's';
-		$minutes = floor(($time_remaining % 3600) / 60);
-		$m_plural = $minutes === 1 ? '' : 's';
+		$time_left = calculate_time_left($time_remaining);
 		throw new \BadMethodCallException(
 			"Your Reddit account or IP address last requested an invite less " .
 			"than 24 hours ago. You can request another invite in $hours " .

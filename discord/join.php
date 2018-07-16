@@ -1,6 +1,6 @@
 <?php
-$title = 'Get an invite to the /r/' . REDDIT_SUB_NAME . ' Discord!';
 require('includes/common.php');
+$title = 'Get an invite to the /r/' . REDDIT_SUB_NAME . ' Discord!';
 
 session_start();
 

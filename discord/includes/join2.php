@@ -60,14 +60,10 @@ $history = check_history($_SESSION['reddit_account']['name'], $_SERVER['REMOTE_A
 foreach ($history as $entry) {
 	if ($entry['invite_time'] > (time() - DISCORD_COOLDOWN_TIMER)) {
 		$time_remaining = ($entry['invite_time'] + DISCORD_COOLDOWN_TIMER) - time();
-		$hours = floor($time_remaining / 3600);
-		$h_plural = $hours === 1 ? '' : 's';
-		$minutes = floor(($time_remaining % 3600) / 60);
-		$m_plural = $minutes === 1 ? '' : 's';
+		$time_left = calculate_time_left($time_remaining);
 		cant_join(
 			"your Reddit account or IP address last requested an invite too " .
-			"recently. You can request another invite in $hours " .
-			"hour{$h_plural} and $minutes minute{$m_plural}"
+			"recently. You can request another invite in $time_left."
 		);
 	}
 }
