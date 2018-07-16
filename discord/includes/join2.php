@@ -42,7 +42,7 @@ if ($reddit_userinfo['is_suspended']) {
 	cant_join('your Reddit account is suspended');
 }
 
-if (!$reddit_userinfo['verified']) {
+if (!$reddit_userinfo['has_verified_email']) {
 	cant_join('your Reddit account doesn\'t have a verified email address on it');
 }
 
