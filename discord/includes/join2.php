@@ -63,7 +63,7 @@ foreach ($history as $entry) {
 		$time_left = calculate_time_left($time_remaining);
 		cant_join(
 			"your Reddit account or IP address last requested an invite too " .
-			"recently. You can request another invite in $time_left."
+			"recently. You can request another invite in $time_left"
 		);
 	}
 }
@@ -101,6 +101,12 @@ require(ROOT . '/includes/header.php');
 		<button class="btn btn-primary btn-join-discord">
 			Let's go!
 		</button>
+		<p class="p-invite-code">
+			Button not working? Copy and paste this invite code into Discord:
+		</p>
+		<p class="p-invite-code">
+			<input style="display: inline; width: 100px;" type="text" class="form-control text-center" readonly="readonly" />
+		</p>
 	</form>
 </div>
 
@@ -109,6 +115,8 @@ $(function()
 	{
 		var $form = $('form[name="gimme-mah-invite"]');
 		$form.find('.btn-join-discord').hide();
+
+		$('p.p-invite-code').hide();
 		
 		$form.submit(function()
 			{
@@ -121,7 +129,12 @@ $(function()
 					method: 'POST',
 					success: function(response)
 						{
-							console.debug(response);
+							$('p.p-invite-code input').val(response).click(function()
+								{
+									$(this).select();
+								});
+							$('p.p-invite-code').show();
+
 							var invite_url = 'https://discord.gg/' + response;
 							
 							var $captcha = $form.find('.g-recaptcha');
@@ -136,7 +149,8 @@ $(function()
 									{
 										window.location.href = invite_url;
 										return false;
-									});
+								});
+
 						},
 					error: function(jqXHR)
 						{

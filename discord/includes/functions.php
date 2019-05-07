@@ -41,9 +41,9 @@ function pseudorandom_bytes($len, $entropy_increase_factor = 1024)
 function calculate_time_left($time_remaining)
 {
 	$hours = intval(floor($time_remaining / 3600));
-	$h_plural = $hours === 1 ? '' : 's';
+	$h_plural = $hours === 1 ? 'hour' : 'hours';
 	$minutes = intval(floor(($time_remaining % 3600) / 60));
-	$m_plural = $minutes === 1 ? '' : 's';
+	$m_plural = $minutes === 1 ? 'minute' : 'minutes';
 	$time_left = '';
 	if ($hours > 0) {
 		$time_left .= "$hours $h_plural";
