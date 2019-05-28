@@ -10,6 +10,9 @@ define('REDDIT_OAUTH_CLIENT_SECRET', 'XXXXXXXXXXXXXXXXXXXXXXXXXXX');
 // Name of the subreddit. Used for both display purposes and to check the user's
 // ban status.
 define('REDDIT_SUB_NAME', 'mysub');
+// Minimum combined link + comment karma in the selected subreddit. 0 or leave
+// undefined to disable the karma check.
+define('REDDIT_SUB_MIN_KARMA', 5);
 
 // Create a discord app with a bot token here:
 //   https://discordapp.com/developers/applications/me

@@ -31,7 +31,7 @@ function get_reddit_redirect_uri()
 function get_reddit_oauth_url()
 {
 	$state = sprintf("%s,%s", time(), hash_hmac('sha256', strval(time()), REDDIT_OAUTH_CLIENT_SECRET));
-	return sprintf("https://www.reddit.com/api/v1/authorize?client_id=%s&response_type=code&state=%s&redirect_uri=%s&duration=temporary&scope=identity,read",
+	return sprintf("https://www.reddit.com/api/v1/authorize?client_id=%s&response_type=code&state=%s&redirect_uri=%s&duration=temporary&scope=identity,read,mysubreddits",
 		REDDIT_OAUTH_CLIENT_ID,
 		$state,
 		get_reddit_redirect_uri()
@@ -167,4 +167,38 @@ function reddit_json_request($bearer_token, $uri, $data = null)
 function get_reddit_account_info($bearer_token)
 {
 	return reddit_api_request($bearer_token, 'me');
+}
+
+/**
+ * Get the user's karma in a subreddit.
+ *
+ * @param string
+ *   Access token
+ * @param string
+ *   Subreddit name
+ * @return array
+ *   Associative array containing keys "comment_karma" and "link_karma"
+ */
+function get_subreddit_karma(string $access_token, string $subreddit)
+{
+	$karma = reddit_api_request($access_token, 'me/karma');
+	if ($karma['kind'] !== 'KarmaList') {
+		throw new \RuntimeException(
+			"get_subreddit_karma(): expected KarmaList, got {$karma['kind']}"
+		);
+	}
+	
+	foreach ($karma['data'] as $entry) {
+		if ($entry['sr'] === $subreddit) {
+			return [
+				'link_karma' => $entry['link_karma'],
+				'comment_karma' => $entry['comment_karma'],
+			];
+		}
+	}
+	
+	return [
+		'link_karma' => 0,
+		'comment_karma' => 0,
+	];
 }

@@ -56,6 +56,17 @@ if ($sub_settings['data']['user_is_banned']) {
 	cant_join('you are banned from /r/' . REDDIT_SUB_NAME);
 }
 
+if (defined('REDDIT_SUB_MIN_KARMA') && REDDIT_SUB_MIN_KARMA > 0) {
+	$my_karma = get_subreddit_karma($access_token, REDDIT_SUB_NAME);
+	
+	if (($my_karma['link_karma'] + $my_karma['comment_karma']) < REDDIT_SUB_MIN_KARMA) {
+		cant_join(
+			"you need to have a combined link and comment karma of at least " .
+			REDDIT_SUB_MIN_KARMA . " in /r/" . REDDIT_SUB_NAME
+		);
+	}
+}
+
 $history = check_history($_SESSION['reddit_account']['name'], $_SERVER['REMOTE_ADDR']);
 foreach ($history as $entry) {
 	if ($entry['invite_time'] > (time() - DISCORD_COOLDOWN_TIMER)) {
