@@ -4,7 +4,10 @@ $title = 'Get an invite to the /r/' . REDDIT_SUB_NAME . ' Discord!';
 
 session_start();
 
-if (isset($_SESSION['oauth_bearer_token']) && $_SESSION['oauth_bearer_token']['expires'] > time()) {
+if (isset($_SESSION['oauth_bearer_token']) &&
+	$_SESSION['oauth_bearer_token']['expires'] > time() &&
+	!empty($_SESSION['oauth_bearer_token']['access_token'])
+) {
 	$access_token = $_SESSION['oauth_bearer_token']['access_token'];
 }
 else if (isset($_GET['code'])) {
@@ -21,7 +24,7 @@ else if (isset($_GET['code'])) {
 }
 
 
-if (isset($_SESSION['reddit_account'])) {
+if (isset($_SESSION['reddit_account']) && !empty($access_token)) {
 	require('includes/join2.php');
 }
 else if (isset($access_token)) {

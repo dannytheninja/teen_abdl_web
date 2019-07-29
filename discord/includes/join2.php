@@ -38,6 +38,12 @@ function cant_join($message)
 
 $reddit_userinfo = $_SESSION['reddit_account'];
 
+if (empty($access_token) || !is_string($access_token)) {
+	session_destroy();
+	cant_join('there was an internal error loading your session. Reload the ' .
+		'page to try again.');
+}
+
 if ($reddit_userinfo['is_suspended']) {
 	cant_join('your Reddit account is suspended');
 }
