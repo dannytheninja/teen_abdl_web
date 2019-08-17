@@ -108,38 +108,54 @@ require(ROOT . '/includes/header.php');
 		not any role-playing identity or persona.
 		</p>
 	<p>If you're an adult, you are welcome on our server, but we ask that you
-		follow the <a href="https://www.reddit.com/r/Teen_ABDL/wiki/adults_roe">rules
+		follow the <a href="https://www.reddit.com/r/<?php echo REDDIT_SUB_NAME; ?>/wiki/adults_roe">rules
 		of engagement</a>. These guidelines set a standard for appropriately
 		and safely interacting with teens, and are intended to prevent abuse.
 		</p>
 	
 	<form method="post" name="gimme-mah-invite" action="invite" class="text-center">
-		<div
-			class="g-recaptcha"
-			data-sitekey="<?php echo RECAPTCHA_SITE_KEY; ?>"
-			data-callback="recaptcha_completed"
-			style="width: 304px; margin: 1em auto;"
-		></div>
+		<div class="row">
+			<div
+				class="g-recaptcha"
+				data-sitekey="<?php echo RECAPTCHA_SITE_KEY; ?>"
+				data-callback="recaptcha_completed"
+				style="width: 304px; margin: 1em auto;"
+			></div>
+		</div>
+		
 		<input type="hidden" name="xsrf_token" value="<?php echo $_SESSION['xsrf_token']; ?>" />
-		<button class="btn btn-primary btn-join-discord">
-			Let's go!
-		</button>
-		<p class="p-invite-code">
-			Button not working? Copy and paste this invite code into Discord:
-		</p>
-		<p class="p-invite-code">
-			<input style="display: inline; width: 100px;" type="text" class="form-control text-center" readonly="readonly" />
-		</p>
+		<div class="row justify-content-center invite-code">
+			<div class="col-xs-6 col-sm-2 align-self-center">
+				<p>Your invite code is:</p>
+				<div class="input-group mb-3">
+					<input type="text" readonly="readonly" class="form-control put-code-here text-center" value="123456" size="10" />
+					<div class="input-group-append">
+						<button type="button" class="btn btn-default btn-copy" title="Copy to clipboard">
+							<span class="fas fa-copy"></span>
+							<span class="sr-only">Copy</span>
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-6 col-sm-2 align-self-center text-center">
+				<p>or</p>
+				<p class="form-control-static">
+					<a href="#" class="btn btn-primary update-this-link">Join in browser</a>
+				</p>
+			</div>
+		</div>
 	</form>
 </div>
 
 <script type="text/javascript">
 $(function()
 	{
+		$('[title]').tooltip();
+
 		var $form = $('form[name="gimme-mah-invite"]');
 		$form.find('.btn-join-discord').hide();
 
-		$('p.p-invite-code').hide();
+		$('.invite-code').hide();
 		
 		$form.submit(function()
 			{
@@ -152,27 +168,19 @@ $(function()
 					method: 'POST',
 					success: function(response)
 						{
-							$('p.p-invite-code input').val(response).click(function()
+							$('.put-code-here').val(response).click(function()
 								{
 									$(this).select();
 								});
-							$('p.p-invite-code').show();
+
+							$('.invite-code').show();
 
 							var invite_url = 'https://discord.gg/' + response;
 							
 							var $captcha = $form.find('.g-recaptcha');
 							$captcha.remove();
 							
-							var $btn = $form.find('.btn-join-discord');
-							$btn
-								.removeClass('btn-primary')
-								.addClass('btn-danger')
-								.text('Join now!')
-								.click(function()
-									{
-										window.location.href = invite_url;
-										return false;
-								});
+							$form.find('.update-this-link').attr('href', invite_url);
 
 						},
 					error: function(jqXHR)
@@ -200,12 +208,29 @@ $(function()
 				
 				return false;
 			});
+		
+		$form.find('.btn-copy').click(function()
+			{
+				var tooltip = $('#' + $(this).attr('aria-describedby')).find('.tooltip-inner');
+				var og_text = tooltip.text();
+				tooltip.text('Copied!');
+				$(this).tooltip('update');
+				
+				$(this).parent().prevAll('input:text').select();
+				document.execCommand('copy');
+
+				$(this).bind('hidden.bs.tooltip', function()
+					{
+						tooltip.text(og_text);
+						$(this).unbind('hidden.bs.tooltip');
+					});
+			});
 	});
 
 function recaptcha_completed()
 {
 	var $form = $('form[name="gimme-mah-invite"]');
-	$form.find('.btn-join-discord').show();
+	$form.submit();
 }
 </script>
 <?php
