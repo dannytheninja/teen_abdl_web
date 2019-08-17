@@ -160,7 +160,19 @@ $(function()
 					});
 			});
 		
-		$('body').bind('wheel', function(ev)
+		window.scroll_timeout = null;
+		$(window).bind('scroll', function()
+			{
+				if (window.scroll_timeout) {
+					clearTimeout(window.scroll_timeout);
+				}
+				window.scroll_timeout = setTimeout(function()
+					{
+						$('body').trigger('scrollend');
+					});
+			});
+		
+		$('body').bind('scrollend wheel', function(ev)
 			{
 				if (window.scrollY + $(window).height() >= $(document).height() && !window.endless_scroll_debounce) {
 					window.endless_scroll_debounce = true;
@@ -171,6 +183,11 @@ $(function()
 					$(window).trigger('endless-scroll');
 				}
 			});
+		
+		setTimeout(function()
+			{
+				$('body').trigger('scrollend');
+			}, 1000);
 	});
 
 function draw_rows($tbody, result)
