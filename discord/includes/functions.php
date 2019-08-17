@@ -60,3 +60,29 @@ function calculate_time_left($time_remaining)
 	
 	return $time_left;
 }
+
+/**
+ * Censor an IP address
+ *
+ * @param string
+ * @return string
+ */
+function censor_ip_address($ip)
+{
+	if (strpos($ip, ':') !== false) {
+		// IPv6
+		$separator = ':';
+	}
+	else if (strpos($ip, '.') !== false) {
+		// IPv4
+		$separator = '.';
+	}
+	if (isset($separator)) {
+		$ip = explode($separator, $ip);
+		$dont_censor = array_slice($ip, 0, 2);
+		$censor = array_slice($ip, 2, 6);
+		$censor = preg_replace('/[a-f0-9]/', 'x', implode($separator, $censor));
+		$ip = implode($separator, $dont_censor) . $separator . $censor;
+	}
+	return $ip;
+}

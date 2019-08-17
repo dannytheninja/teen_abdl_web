@@ -202,3 +202,15 @@ function get_subreddit_karma(string $access_token, string $subreddit)
 		'comment_karma' => 0,
 	];
 }
+
+/**
+ * Return true if the user has mod rights
+ *
+ * @return bool
+ */
+function can_mod(): bool
+{
+	return session_status() === PHP_SESSION_ACTIVE &&
+		array_key_exists('can_mod', $_SESSION) &&
+		$_SESSION['can_mod'] === true;
+}

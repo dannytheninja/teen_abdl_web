@@ -30,7 +30,7 @@ function check_history($reddit_username, $remote_addr)
 {
 	$PDO = get_pdo();
 	
-	$stmt = $PDO->prepare('SELECT * FROM invite_log WHERE invite_time > :start_time AND (reddit_username = :reddit_username OR ip_address = :remote_addr);');
+	$stmt = $PDO->prepare('SELECT * FROM invite_log WHERE invite_time > :start_time AND (reddit_username = :reddit_username OR ip_address = :remote_addr) AND ignore = 0;');
 	
 	$stmt->execute([
 		':start_time'      => time() - DISCORD_COOLDOWN_TIMER,

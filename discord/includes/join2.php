@@ -79,6 +79,10 @@ if (defined('REDDIT_SUB_MIN_KARMA') && REDDIT_SUB_MIN_KARMA > 0) {
 	}
 }
 
+if ($sub_settings['data']['user_is_moderator'] === true) {
+	$_SESSION['can_mod'] = true;
+}
+
 $history = check_history($_SESSION['reddit_account']['name'], $_SERVER['REMOTE_ADDR']);
 foreach ($history as $entry) {
 	if ($entry['invite_time'] > (time() - DISCORD_COOLDOWN_TIMER)) {
@@ -99,6 +103,11 @@ require(ROOT . '/includes/header.php');
 ?>
 <div class="container">
 	<h1>Thanks, <?php echo htmlspecialchars($reddit_userinfo['name']); ?>! You're good to go!</h1>
+	<?php if (can_mod()): ?>
+	<p>
+		<a href="mod.php">Use the mod control panel</a>
+	</p>
+	<?php endif; ?>
 	<p>Please confirm for us that you're not a robot below, then click the button to join our Discord server.</p>
 	
 	<h3>After you join</h3>
