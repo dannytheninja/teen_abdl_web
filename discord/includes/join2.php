@@ -17,6 +17,12 @@
  */
 function cant_join($message)
 {
+	log_rejection(
+		$_SESSION['reddit_account']['name'] ?? '[none]',
+		$_SERVER['REMOTE_ADDR'],
+		$message
+	);
+
 	$title = 'Unable to join';
 	require(ROOT . '/includes/header.php');
 

@@ -7,3 +7,11 @@ CREATE TABLE invite_log (
 	invite_time int unsigned NOT NULL,
 	ip_address varchar(39) NOT NULL
 );
+
+CREATE TABLE rejections (
+	event_id integer PRIMARY KEY AUTOINCREMENT,
+	reddit_username varchar(255) NOT NULL,
+	event_time int unsigned NOT NULL,
+	ip_address varchar(39) NOT NULL,
+	reason varchar(255) NOT NULL
+);

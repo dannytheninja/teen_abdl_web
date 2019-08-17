@@ -75,3 +75,31 @@ function log_invite($reddit_username, $remote_addr, $invite_code)
 	
 	$PDO->commit();
 }
+
+/**
+ * Write a lot entry to the database following the rejection of an invitation.
+ *
+ * @param string
+ *   Reddit username
+ * @param string
+ *   End user's IP address
+ * @param string
+ *   The reason the invitation request was rejected
+ */
+function log_rejection($reddit_username, $remote_addr, $reason)
+{
+	$PDO = get_pdo();
+	$PDO->beginTransaction();
+	
+	$stmt = $PDO->prepare('INSERT INTO rejections (reddit_username, ip_address, event_time, reason) ' .
+			'  VALUES (:reddit_username, :ip_address, :event_time, :reason);');
+	
+	$stmt->execute([
+		':reddit_username' => $reddit_username,
+		':ip_address'      => $remote_addr,
+		':event_time'      => time(),
+		':reason'          => $reason,
+	]);
+	
+	$PDO->commit();
+}

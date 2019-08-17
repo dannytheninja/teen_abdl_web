@@ -7,6 +7,16 @@ set_exception_handler(function($exception)
 	{
 		header('Status: 500 Internal Server Error');
 		
+		$message = "[exception] " .
+					get_class($exception) . ': ' .
+					$e->getMessage();
+
+		log_rejection(
+			$_SESSION['reddit_account']['name'] ?? '[none]',
+			$_SERVER['REMOTE_ADDR'],
+			$message
+		);
+		
 		if (defined('OUTPUT_JSON')) {
 			// Build a nice little JSON data structure
 			$message = [
