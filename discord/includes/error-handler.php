@@ -9,7 +9,7 @@ set_exception_handler(function($exception)
 		
 		$message = "[exception] " .
 					get_class($exception) . ': ' .
-					$e->getMessage();
+					$exception->getMessage();
 
 		log_rejection(
 			$_SESSION['reddit_account']['name'] ?? '[none]',

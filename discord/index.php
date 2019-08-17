@@ -14,14 +14,39 @@ require('includes/header.php');
 	
 	<p><a href="privacy">Read the privacy policy</a></p>
 	
-	<p>
+	<p class="term">
 		<label>
-			<input type="checkbox" id="agree-to-rules" />
+			<input type="checkbox" />
 			I have read and agreed to the <a href="https://www.reddit.com/r/<?php echo REDDIT_SUB_NAME; ?>/wiki/rules">/r/<?php echo REDDIT_SUB_NAME; ?> rules</a>
 		</label>
 	</p>
 	
-	<div class="agreed-to-the-rules" style="display: none;">
+	<p class="term">
+		<label>
+			<input type="checkbox" />
+			I understand that I can only request an invite once every 24 hours.
+			If I lose my code after it's issued, I will need to wait.
+		</label>
+	</p>
+	
+	<p class="term">
+		<label>
+			<input type="checkbox" />
+			I understand that invites are single-use. I will not give my code
+			away to someone else unless I've received permission from the mods.
+		</label>
+	</p>
+	
+	<p class="term">
+		<label>
+			<input type="checkbox" />
+			I understand that my Reddit account will become linked to my Discord
+			account, and that being banned from one will result in me being
+			banned from the other as well.
+		</label>
+	</p>
+	
+	<div class="term">
 		<p>
 			<a href="join" class="btn btn-primary">Verify my Reddit Account</a>
 		</p>
@@ -31,11 +56,18 @@ require('includes/header.php');
 <script type="text/javascript">
 	$(function()
 		{
-			$('#agree-to-rules').change(function()
+			$('.term:not(:first)').hide();
+			$('.term :checkbox').change(function()
 				{
-					var $p = $('.agreed-to-the-rules');
-					$(this).prop('checked') ? $p.show() : $p.hide();
-				}).trigger('change');
+					var parent = $(this).parents('.term:first');
+					if ($(this).is(':checked')) {
+						parent.nextAll('.term:first').show();
+					}
+					else {
+						parent.nextAll('.term').hide()
+							.find(':checkbox').prop('checked', false);
+					}
+				});
 		});
 </script>
 
