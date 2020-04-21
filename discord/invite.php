@@ -1,6 +1,4 @@
 <?php
-use RestCord\DiscordClient;
-
 require 'includes/common.php';
 output_json();
 
@@ -40,48 +38,7 @@ if (!$captcha['success']) {
 	throw new \BadMethodCallException("You did not complete the reCAPTCHA challenge.");
 }
 
-$client = new DiscordClient(['token' => DISCORD_BOT_TOKEN]);
-$channels = $client->guild->getGuildChannels(['guild.id' => DISCORD_GUILD_ID]);
-
-foreach ($channels as $c) {
-	if ($c->name === DISCORD_NOTIF_CHANNEL) {
-		$notificationChannel = $c;
-		break;
-	}
-}
-
-if (!isset($notificationChannel)) {
-	throw new \RuntimeException(
-		"Cannot find notification channel in the selected guild"
-	);
-}
-
-foreach ($channels as $c) {
-	if ($c->name === DISCORD_INVITE_CHANNEL) {
-		$inviteChannel = $c;
-	}
-}
-
-$invite = $client->channel->createChannelInvite([
-	'channel.id' => $inviteChannel->id,
-	'max_age'    => 3600,
-	'max_uses'   => 1,
-	'temporary'  => true,
-	'unique'     => true,
-]);
-
-$client->channel->createMessage([
-	'channel.id' => $notificationChannel->id,
-	'embed' => [
-		'title'       => 'Inviting user',
-		'description' => "Sending a new invitation",
-		'fields'      => [
-			['name' => 'Reddit username', 'value' => $_SESSION['reddit_account']['name']],
-			['name' => 'Invite code', 'value' => $invite->code],
-		],
-		'color'       => 0x46A046,
-	],
-]);
+$invite = generate_discord_invite($_SESSION['reddit_account']['name']);
 
 log_invite($_SESSION['reddit_account']['name'], $_SERVER['REMOTE_ADDR'], $invite->code);
 

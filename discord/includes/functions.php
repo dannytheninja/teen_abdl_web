@@ -1,4 +1,6 @@
 <?php
+use RestCord\DiscordClient;
+use RestCord\Model\Invite\Invite;
 
 /**
  * Random string generator. Not really cryptographically secure, but better than
@@ -16,7 +18,7 @@ function pseudorandom_bytes($len, $entropy_increase_factor = 1024)
 	if (!$fp) {
 		throw new \RuntimeException("Cannot open /dev/urandom");
 	}
-	
+
 	$str = '';
 	for ($i = 0; $i < $len; $i++) {
 		$byte = 0;
@@ -25,9 +27,9 @@ function pseudorandom_bytes($len, $entropy_increase_factor = 1024)
 		}
 		$str .= chr($byte);
 	}
-	
+
 	fclose($fp);
-	
+
 	return $str;
 }
 
@@ -57,7 +59,7 @@ function calculate_time_left($time_remaining)
 	if (empty($time_left)) {
 		$time_left .= "less than a minute";
 	}
-	
+
 	return $time_left;
 }
 
@@ -85,4 +87,65 @@ function censor_ip_address($ip)
 		$ip = implode($separator, $dont_censor) . $separator . $censor;
 	}
 	return $ip;
+}
+
+/**
+ * Create a Discord invitation to the welcome room.
+ *
+ * @param string
+ *   Reddit username
+ * @return Invite
+ */
+function generate_discord_invite($redditUsername): Invite
+{
+    $client = new DiscordClient(['token' => DISCORD_BOT_TOKEN]);
+    $channels = $client->guild->getGuildChannels(['guild.id' => DISCORD_GUILD_ID]);
+
+    foreach ($channels as $c) {
+        if ($c->name === DISCORD_NOTIF_CHANNEL) {
+            $notificationChannel = $c;
+            break;
+        }
+    }
+
+    if (!isset($notificationChannel)) {
+        throw new \RuntimeException(
+            "Cannot find notification channel in the selected guild"
+        );
+    }
+
+    foreach ($channels as $c) {
+        if ($c->name === DISCORD_INVITE_CHANNEL) {
+            $inviteChannel = $c;
+        }
+    }
+
+    if (!isset($inviteChannel)) {
+        throw new \RuntimeException(
+            "Cannot find target channel in the selected guild"
+        );
+    }
+
+    $invite = $client->channel->createChannelInvite([
+        'channel.id' => $inviteChannel->id,
+        'max_age'    => 0,
+        'max_uses'   => 1,
+        'temporary'  => true,
+        'unique'     => true,
+    ]);
+
+    $client->channel->createMessage([
+        'channel.id' => $notificationChannel->id,
+        'embed' => [
+            'title'       => 'Inviting user',
+            'description' => "Sending a new invitation",
+            'fields'      => [
+                ['name' => 'Reddit username', 'value' => $redditUsername],
+                ['name' => 'Invite code', 'value' => $invite->code],
+            ],
+            'color'       => 0x46A046,
+        ],
+    ]);
+
+    return $invite;
 }
